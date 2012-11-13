@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block nav %}
+    <li><a href="{{ url }}">Начало</a></li>
+    <li><a href="#">За книжарницата</a></li>
+    {% if user.is_authenticated %}
+        <li class="active"><a href="{{ url }}/basket/page/1">Кошница({{ purchased_books }})</a></li>
+    {% endif %}
+{% endblock nav %}
+
+{% block content %}
+
+    <div class="span7 offset2">
+        <div class="well">
+            <ul class="nav nav-list">
+                <li class="nav-header">Регистрация</li>
+            </ul>
+
+            <div class="container-fluid">
+                <form action="{{ url }}/registerUser/" method="post" class="form-horizontal">
+                    {% csrf_token %}
+
+                    <div class="control-group">
+                        <label class="control-label" for="inputUsername">Потребителско име:</label>
+                        <div class="controls">
+                            <input type="text" id="inputUsername" name="inputUsername" placeholder="">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputPassword">Парола:</label>
+                        <div class="controls">
+                            <input type="password" id="inputPassword" name="inputPassword" placeholder="">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputEmail">Електронна поща:</label>
+                        <div class="controls">
+                            <input type="text" id="inputEmail" name="inputEmail" placeholder="">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Регистрирай ме</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

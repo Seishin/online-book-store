@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block login %}
+    <div class="pull-right">
+        {% if form.errors %}
+            <p>Your username and password didn't match, please try again.</p>
+        {% endif %}
+
+        <form class="form-inline navbar-form" action="{{ url }}/login/" method="post">{% csrf_token %}
+            <input type="text" class="input-small" placeholder="Име" name="username" />
+            <input type="password" class="input-small" placeholder="Парола" name="password" />
+            <label class="checkbox">
+                <input type="checkbox"> Запомни ме
+            </label>
+            {% if next %}
+                <imput type="hidden" name="next" value="{{ next }}">
+            {% else %}
+                <input type="hidden" name="next" value="/">
+            {% endif %}
+            <button type="submit" class="btn">Вход</button>
+        </form>
+    </div>
+{% endblock login %}

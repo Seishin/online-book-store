@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block nav %}
+    <li><a href="{{ url }}">Начало</a></li>
+    <li><a href="#">За книжарницата</a></li>
+    {% if user.is_authenticated %}
+        <li class="active"><a href="{{ url }}/basket/page/1">Кошница({{ purchased_books }})</a></li>
+    {% endif %}
+{% endblock nav %}
+
+{% block content %}
+    <div class="span12">
+        <div class="well">
+            <ul class="nav nav-list pull-right">
+                <li>Дължима сума: <strong>{{ money }}</strong> лв. за <strong>{{ purchased_books }}</strong> броя книги.</li>
+            </ul>
+            <div class="container-fluid" style="margin-top: 60px;">
+                {% for book in books.object_list %}
+                    <div class="row-fluid" style="margin-top: 10px;">
+                        <div class="span3">
+                            <img src="{{ url }}/assets{{ book.book.cover_img }}" class="img-polaroid" alt="" style="width: 80px; height: 123px;">
+                        </div>
+                        <div class="span9">
+                            <h4>{{ book.book.title }}</h4>
+                            <h5>Цена: {{ book.book.price }} лв.</h5>
+                            <h5>Дата на покупката: {{ book.purchase_date }}</h5>
+                            <a href="{{ url }}/unbuy/{{ book.pk }}/"><button class="btn btn-danger">Изтрии</button></a>
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+
+            <div class="pagination pagination-centered">
+                <ul>
+                    {% if books.has_previous %}
+                        <li class="active"><a href="{{ url }}/basket/page/{{ books.previous_page_number }}"><<</a></li>
+                        <li class="active"><a href="{{ url }}/basket/page/{{ books.previous_page_number }}">{{ books.previous_page_number }}</a></li>
+                    {% endif %}
+
+                    <li class="disabled"><a href="#">{{ books.number }}</a></li>
+
+                    {% if books.has_next %}
+                        <li class="active"><a href="{{ url }}/basket/page/{{ books.next_page_number }}">{{ books.next_page_number }}</a></li>
+                        <li class="active"><a href="{{ url }}/basket/page/{{ books.next_page_number }}">>></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

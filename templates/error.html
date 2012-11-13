@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block nav %}
+    <li><a href="{{ url }}">Начало</a></li>
+    <li><a href="#">За книжарницата</a></li>
+    {% if user.is_authenticated %}
+        <li class="active"><a href="{{ url }}/basket/page/1">Кошница({{ purchased_books }})</a></li>
+    {% endif %}
+{% endblock nav %}
+
+{% block content %}
+    <div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <h4>Грешка!</h4>
+    <center>
+        {{ error }}
+        <br />
+        <br />
+        <a href="{{ url }}/{{ page }}"><button class="btn btn-danger">Назад</button></a>
+    </center>
+    </div>
+{% endblock content %}
