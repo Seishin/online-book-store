@@ -162,3 +162,55 @@ def logout(request):
     auth.logout(request)
 
     return HttpResponseRedirect('/')
+    
+def normalizeQuery(query_string, findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                   normspace=re.compile(r'\s{2,}').sub):
+    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
+
+def getQuery(query_string, search_fields):
+    ''' Rerns a query, that is a combination of Q objects. That combination
+        aims to search keywords within a model by testing the given search fields.
+
+    '''
+    query = None # Query to search for every search term
+    terms = normalizeQuery(query_string)
+    for term in terms:
+        or_query = None # Query to search for a given term in each field
+        for field_name in search_fields:
+            q = Q(**{"%s__icontains" % field_name: term})
+            if or_query is None:
+                or_query = q
+            else:
+                or_query = or_query | q
+        if query is None:
+            query = or_query
+        else:
+            query = query & or_query
+    return query
+
+def search(request, page = 1):
+    found_entries = ''
+
+    type    = request.POST.get('type')
+    queryString = request.POST.get('searchBox')
+
+    if queryString == '':
+        return HttpResponseRedirect('/')
+
+    if type == 'Author':
+        entry_query = getQuery(queryString, ['author__name'])
+        found_entries = Books.objects.filter(entry_query)
+    elif type == 'Price':
+        if not queryString.isdigit():
+            return HttpResponseRedirect('/')
+        found_entries = Books.objects.filter(price = queryString)
+    elif type == 'Title':
+        entry_query = getQuery(queryString, ['title'])
+        found_entries = Books.objects.filter(entry_query)
+
+    bookP = paginator(found_entries, page)
+
+    data = {'url' : settings.URL,
+            'books' : bookP }
+
+    return direct_to_template(request, 'searchPage.html', data)
