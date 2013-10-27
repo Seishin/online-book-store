@@ -19,6 +19,8 @@ urlpatterns = patterns('',
 
     url(r'^buy/(\d+)/$', 'web_site.views.buyABook'),
     url(r'^unbuy/(\d+)/$', 'web_site.views.unbuyABook'),
+    
+    url(r'^search/(?P<page>\d+)/$', 'web_site.views.search'),
 
     url(r'^admin/', include(admin.site.urls)),
 
